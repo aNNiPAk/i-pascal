@@ -21,21 +21,23 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Build with Maven (skip tests)
-        run: mvn -B -ntp -DskipTests clean package
+      - name: Maven version
+        run: mvn -v
 
-      - name: Upload build artifacts
+      - name: Build plugin module (skip tests)
+        run: mvn -B -ntp -DskipTests -pl plugin -am clean package
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: i-pascal-artifacts
-          if-no-files-found: ignore
+          if-no-files-found: warn
           path: |
             plugin/target/*.zip
             plugin/target/*.jar
             jps-plugin/target/*.jar
 
-      # Опционально: создать GitHub Release и приложить артефакты при пуше тега v*
-      - name: Publish release
+      - name: Publish release (tags only)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:

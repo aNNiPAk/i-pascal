@@ -1,55 +1,81 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.siberika.idea</groupId>
-    <artifactId>pas</artifactId>
+    <artifactId>pas-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Pascal plugin</name>
     <packaging>pom</packaging>
 
+    <name>I-Pascal Plugin Parent</name>
+
+    <!-- 1. Указываем Maven, какие модули нужно собрать -->
+    <modules>
+        <module>plugin</module>
+        <module>jps-plugin</module>
+    </modules>
+
+    <!-- 2. Свойства для централизованного управления версиями -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Версия IDE, под которую собираем -->
+        <idea.version>2020.1</idea.version>
+        <!-- Версия Java, которую требует IDE -->
+        <java.version>1.8</java.version>
+        <!-- Версия плагина для сборки -->
+        <intellij.plugin.version>1.17.2</intellij.plugin.version>
     </properties>
 
+    <!-- 3. Управление зависимостями для всех модулей -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Зависимость от IntelliJ Platform SDK -->
+            <dependency>
+                <groupId>com.jetbrains.intellij</groupId>
+                <artifactId>idea</artifactId>
+                <version>${idea.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <!-- Тестовые зависимости -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.6</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 4. Управление плагинами сборки для всех модулей -->
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- Плагин для компиляции Java-кода -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+                <!-- Специальный плагин от JetBrains для сборки -->
+                <plugin>
+                    <groupId>com.jetbrains.intellij.plugins</groupId>
+                    <artifactId>intellij-plugin-maven-plugin</artifactId>
+                    <version>${intellij.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
-    <dependencies>
-        <!--logging-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.4</version>
-        </dependency>
-
-        <!--  TESTING  -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
 </project>
-

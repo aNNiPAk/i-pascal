@@ -1,49 +1,51 @@
-name: Build I-Pascal
+# Имя рабочего процесса
+name: Build I-Pascal Plugin (for IDEA 2020.1)
 
+# Триггеры для запуска
 on:
   push:
     branches: [ master, main ]
-    tags: [ 'v*' ]
   pull_request:
+    branches: [ master, main ]
+  release:
+    types: [ created ]
+  workflow_dispatch:
 
 jobs:
   build:
+    # Запускаем на последней версии Ubuntu
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Клонируем репозиторий
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Temurin JDK 17
+      # 2. Устанавливаем JDK 8, так как в pom.xml указана java.version 1.8
+      # и целевая IDE 2020.1 работает на Java 8.
+      - name: Set up Temurin JDK 8
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: '17'
+          distribution: 'temurin'
+          java-version: '8'
           cache: maven
 
-      - name: Maven version
-        run: mvn -v
+      # 3. Собираем весь проект с помощью Maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
 
-      - name: Build plugin module (skip tests)
-        run: mvn -B -ntp -DskipTests -pl plugin -am clean package
-
-      - name: Upload artifacts
+      # 4. Загружаем ZIP-архив плагина как артефакт
+      - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
-          name: i-pascal-artifacts
-          if-no-files-found: warn
-          path: |
-            plugin/target/*.zip
-            plugin/target/*.jar
-            jps-plugin/target/*.jar
+          name: i-pascal-plugin-zip
+          path: plugin/target/*.zip
 
-      - name: Publish release (tags only)
-        if: startsWith(github.ref, 'refs/tags/')
+      # 5. Публикуем релиз, прикрепляя ZIP-архив (только для события 'release')
+      - name: Publish release assets
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            plugin/target/*.zip
-            plugin/target/*.jar
-            jps-plugin/target/*.jar
+          files: plugin/target/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

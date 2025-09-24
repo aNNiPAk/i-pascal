@@ -44,7 +44,7 @@
             <!-- Зависимость от IntelliJ Platform SDK -->
             <dependency>
                 <groupId>com.jetbrains.intellij</groupId>
-                <artifactId>idea</artifactId>
+                <artifactId>idea-IC</artifactId>
                 <version>${idea.version}</version>
                 <scope>provided</scope>
             </dependency>

@@ -27,6 +27,17 @@
         <intellij.plugin.version>1.17.2</intellij.plugin.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jetbrains-releases</id>
+            <url>https://www.jetbrains.com/intellij-repository/releases</url>
+        </repository>
+        <repository>
+            <id>jetbrains-third-party</id>
+            <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies</url>
+        </repository>
+    </repositories>
+
     <!-- 3. Управление зависимостями для всех модулей -->
     <dependencyManagement>
         <dependencies>

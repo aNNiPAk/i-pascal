@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Ссылка на родительский POM для наследования версий и конфигураций -->
+    <parent>
+        <groupId>com.siberika.idea</groupId>
+        <artifactId>pas-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- Координаты этого конкретного модуля -->
+    <artifactId>plugin</artifactId>
+    <packaging>jar</packaging>
+
+    <name>I-Pascal Main Plugin Module</name>
+
+    <!-- Зависимости, необходимые для этого модуля -->
+    <dependencies>
+        <!-- Зависимость от IntelliJ SDK (версия берется из родительского POM) -->
+        <dependency>
+            <groupId>com.jetbrains.intellij</groupId>
+            <artifactId>idea</artifactId>
+        </dependency>
+
+        <!-- Зависимость от нашего jps-plugin модуля -->
+        <dependency>
+            <groupId>com.siberika.idea</groupId>
+            <artifactId>jps-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Указываем нестандартное расположение исходников и ресурсов -->
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>resources</directory>
+            </resource>
+        </resources>
+        
+        <plugins>
+            <!-- Главный плагин для сборки плагинов IDEA -->
+            <plugin>
+                <groupId>com.jetbrains.intellij.plugins</groupId>
+                <artifactId>intellij-plugin-maven-plugin</artifactId>
+                <version>${intellij.plugin.version}</version>
+                <configuration>
+                    <!-- Указываем, что нужно включить артефакт jps-plugin в сборку -->
+                    <jpsPluginArtifact>com.siberika.idea:jps-plugin:${project.version}</jpsPluginArtifact>
+                    <!-- Указываем путь к plugin.xml, так как он в нестандартном месте -->
+                    <pluginXml>META-INF/plugin.xml</pluginXml>
+                </configuration>
+                <executions>
+                    <!-- Привязываем цели плагина к стандартным фазам Maven -->
+                    <execution>
+                        <id>default-package-plugin</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package-plugin</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-prepare-sandbox</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>prepare-sandbox</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

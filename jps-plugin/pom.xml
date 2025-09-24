@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.jetbrains.intellij</groupId>
-            <artifactId>idea</artifactId>
+            <artifactId>idea-IC</artifactId>
         </dependency>
     </dependencies>
 

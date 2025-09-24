@@ -21,7 +21,7 @@
         <!-- Зависимость от IntelliJ SDK (версия берется из родительского POM) -->
         <dependency>
             <groupId>com.jetbrains.intellij</groupId>
-            <artifactId>idea</artifactId>
+            <artifactId>idea-IC</artifactId>
         </dependency>
 
         <!-- Зависимость от нашего jps-plugin модуля -->
